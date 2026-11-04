@@ -1,0 +1,172 @@
+@model Proyecto.Models.Producto
+@inject Proyecto.Services.IUserSessionService UserSession
+
+@{
+    ViewData["Title"] = "Detalle del Producto";
+}
+
+<div class="container py-2">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Productos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Nombre</li>
+        </ol>
+    </nav>
+
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <span class="badge bg-secondary mb-2">@Model.Categoria?.Nombre</span>
+                            <h1 class="h2 text-dark m-0">@Model.Nombre</h1>
+                        </div>
+                        <div class="text-end">
+                            <span class="fs-3 fw-bold text-success">$@Model.Precio.ToString("F2")</span>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <h5 class="text-secondary mt-4 mb-3">Descripción</h5>
+                    <p class="text-dark fs-5" style="white-space: pre-line;">
+                        @(string.IsNullOrEmpty(Model.Descripcion) ? "Sin descripción disponible." : Model.Descripcion)
+                    </p>
+
+                    <div class="row mt-4 pt-3 border-top g-3">
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block small">Emprendimiento</span>
+                            <a asp-controller="Productos" asp-action="Index" asp-route-emprendimientoId="@Model.EmprendimientoId" class="fw-semibold text-primary text-decoration-none fs-5">
+                                @Model.Emprendimiento?.Nombre
+                            </a>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block small">Disponibilidad (Stock)</span>
+                            @if (Model.Stock > 0)
+                            {
+                                <span class="fs-5 fw-semibold text-success" data-product-stock="@Model.Id"><i class="bi bi-check-circle-fill me-1"></i> @Model.Stock unidades disponibles</span>
+                            }
+                            else
+                            {
+                                <span class="fs-5 fw-semibold text-danger" data-product-stock="@Model.Id"><i class="bi bi-x-circle-fill me-1"></i> Agotado</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            @if (UserSession.CanShop)
+            {
+                <div class="card shadow-sm border-0 bg-light p-4 mb-4">
+                    @if (Model.Stock > 0)
+                    {
+                        <h4 class="text-dark h5 mb-3"><i class="bi bi-cart"></i> Hacer un Pedido</h4>
+                        <form asp-controller="Carrito" asp-action="Add" method="post" class="ajax-cart-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="productoId" value="@Model.Id" />
+                            <div class="mb-3">
+                                <label for="cantidad" class="form-label text-secondary small fw-semibold">Cantidad a comprar:</label>
+                                <div class="input-group">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="document.getElementById('cantidad').stepDown()">-</button>
+                                    <input type="number" id="cantidad" name="cantidad" class="form-control text-center fw-bold" value="1" min="1" max="@Model.Stock" readonly />
+                                    <button class="btn btn-outline-secondary" type="button" onclick="document.getElementById('cantidad').stepUp()">+</button>
+                                </div>
+                                <div class="form-text">Máximo disponible: @Model.Stock</div>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100 py-2 btn-add-cart">
+                                <i class="bi bi-cart-plus-fill me-1"></i> Agregar al Carrito
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger m-0 text-center">
+                            <i class="bi bi-exclamation-octagon-fill d-block fs-3 mb-2"></i>
+                            Este producto no tiene stock disponible en este momento.
+                        </div>
+                    }
+                </div>
+            }
+
+            <div class="d-grid gap-2">
+                @if (UserSession.IsAdmin || (UserSession.IsEntrepreneur && Model.Emprendimiento?.UsuarioId == UserSession.GetCurrentUserId()))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning py-2 text-white">
+                        <i class="bi bi-pencil-square me-1"></i> Editar Producto
+                    </a>
+                }
+                <a asp-action="Index" class="btn btn-outline-secondary py-2">
+                    <i class="bi bi-arrow-left me-1"></i> Volver a la Lista
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".ajax-cart-form").forEach(function (form) {
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    
+                    var formData = new FormData(form);
+                    var submitBtn = form.querySelector(".btn-add-cart");
+                    var originalHtml = submitBtn.innerHTML;
+                    
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Agregando...';
+                    
+                    fetch(form.action, {
+                        method: "POST",
+                        body: formData,
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest",
+                            "Accept": "application/json"
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error("Error");
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            var badge = document.querySelector(".navbar .badge");
+                            if (badge) {
+                                badge.textContent = data.cartCount;
+                                badge.classList.remove("d-none");
+                            } else {
+                                var cartLink = document.querySelector('a[href="/Carrito"]');
+                                if (cartLink) {
+                                    cartLink.innerHTML += ' <span class="badge bg-danger rounded-pill ms-1">' + data.cartCount + '</span>';
+                                }
+                            }
+                            
+                            submitBtn.className = submitBtn.className.replace("btn-success", "btn-outline-success");
+                            submitBtn.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> ¡Agregado!';
+                            
+                            setTimeout(function () {
+                                submitBtn.disabled = false;
+                                submitBtn.className = submitBtn.className.replace("btn-outline-success", "btn-success");
+                                submitBtn.innerHTML = originalHtml;
+                            }, 1500);
+                        } else {
+                            alert("No se pudo agregar al carrito.");
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalHtml;
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert("Error al agregar al carrito.");
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalHtml;
+                    });
+                });
+            });
+        });
+    </script>
+}

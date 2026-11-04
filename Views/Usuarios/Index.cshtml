@@ -1,0 +1,220 @@
+@model IEnumerable<Proyecto.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    :root{
+        --tinta:#241F1B;
+        --crema:#FBF4E8;
+        --crema-2:#F1E6D2;
+        --terracota:#C75D3D;
+        --terracota-d:#9C3F26;
+        --mostaza:#E0A845;
+        --salvia:#6B7A4F;
+        --linea:#E2D3B4;
+    }
+
+    .em-usr-page{ font-family:'Work Sans','Segoe UI',sans-serif; color:var(--tinta); }
+
+    .em-header{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:1.6rem;
+        flex-wrap:wrap;
+        gap:1rem;
+    }
+    .em-header h1{
+        font-family:'Fraunces', Georgia, serif;
+        font-weight:600;
+        font-size:2rem;
+        color:var(--tinta);
+        margin:0;
+        display:flex;
+        align-items:center;
+        gap:.6rem;
+    }
+    .em-header h1::before{
+        content:"";
+        display:inline-block;
+        width:10px; height:10px;
+        border-radius:50%;
+        background:var(--terracota);
+    }
+
+    .em-btn-create{
+        background:var(--terracota);
+        border:none;
+        color:#fff !important;
+        border-radius:999px;
+        font-weight:600;
+        font-size:.92rem;
+        padding:.6rem 1.3rem;
+        text-decoration:none;
+        display:inline-flex;
+        align-items:center;
+        gap:.4rem;
+        transition:background .18s ease, transform .18s ease;
+    }
+    .em-btn-create:hover{ background:var(--terracota-d); color:#fff; transform:translateY(-2px); }
+
+    .em-table-wrap{
+        background:#fff;
+        border:1px solid var(--linea);
+        border-radius:16px;
+        overflow:auto;
+    }
+
+    .em-table{
+        width:100%;
+        border-collapse:collapse;
+        margin:0;
+        min-width:880px;
+    }
+    .em-table thead th{
+        background:var(--tinta);
+        color:var(--crema);
+        font-family:'Work Sans', sans-serif;
+        font-size:.72rem;
+        font-weight:700;
+        letter-spacing:.07em;
+        text-transform:uppercase;
+        padding:.95rem 1rem;
+        text-align:left;
+        border:none;
+        white-space:nowrap;
+    }
+    .em-table tbody td{
+        padding:.95rem 1rem;
+        border-bottom:1px solid var(--linea);
+        font-size:.9rem;
+        vertical-align:middle;
+        color:var(--tinta);
+    }
+    .em-table tbody tr:last-child td{ border-bottom:none; }
+    .em-table tbody tr{ transition:background .15s ease; }
+    .em-table tbody tr:hover{ background:var(--crema-2); }
+
+    .em-name{ font-family:'Fraunces', serif; font-weight:600; color:var(--tinta); }
+    .em-email{ color:#7a7164; }
+
+    .em-pill{
+        font-size:.72rem;
+        font-weight:700;
+        padding:.25rem .65rem;
+        border-radius:999px;
+        white-space:nowrap;
+        display:inline-block;
+    }
+    .em-pill-on{ background:#E7EEDC; color:var(--salvia); border:1px solid #cfdcb9; }
+    .em-pill-off{ background:var(--crema-2); color:#a89c87; border:1px solid var(--linea); }
+
+    .em-role-admin{ background:#F4DCD3; color:var(--terracota-d); border:1px solid #e9bba9; }
+    .em-role-emp{ background:#FBE9CE; color:#8a5a14; border:1px solid #f1cf9c; }
+
+    .em-status-active{ background:#E7EEDC; color:var(--salvia); border:1px solid #cfdcb9; }
+    .em-status-inactive{ background:var(--crema-2); color:#8a8174; border:1px solid var(--linea); }
+
+    .em-row-actions{ display:flex; gap:.4rem; }
+    .em-row-actions a{
+        border-radius:999px;
+        width:34px; height:34px;
+        display:inline-flex; align-items:center; justify-content:center;
+        border:1.5px solid var(--linea);
+        color:var(--tinta);
+        text-decoration:none;
+        font-size:.85rem;
+        transition:background .18s ease, color .18s ease, border-color .18s ease;
+    }
+    .em-row-actions a.view:hover{ background:var(--salvia); color:#fff; border-color:var(--salvia); }
+    .em-row-actions a.edit:hover{ background:var(--mostaza); color:var(--tinta); border-color:var(--mostaza); }
+    .em-row-actions a.delete:hover{ background:var(--terracota-d); color:#fff; border-color:var(--terracota-d); }
+</style>
+
+<div class="em-usr-page">
+
+    <div class="em-header">
+        <h1>@ViewData["Title"]</h1>
+        <a asp-action="Create" class="em-btn-create">
+            <i class="bi bi-plus-circle"></i> Crear Nuevo
+        </a>
+    </div>
+
+    <div class="em-table-wrap">
+        <table class="em-table">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+                    <th>@Html.DisplayNameFor(model => model.Email)</th>
+                    <th>@Html.DisplayNameFor(model => model.Telefono)</th>
+                    <th>@Html.DisplayNameFor(model => model.EsCliente)</th>
+                    <th>@Html.DisplayNameFor(model => model.EsEmprendedor)</th>
+                    <th>@Html.DisplayNameFor(model => model.EsAdministrador)</th>
+                    <th>@Html.DisplayNameFor(model => model.Activo)</th>
+                    <th>@Html.DisplayNameFor(model => model.FechaCreacion)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+@foreach (var item in Model) {
+                <tr>
+                    <td><span class="em-name">@Html.DisplayFor(modelItem => item.Nombre)</span></td>
+                    <td><span class="em-email">@Html.DisplayFor(modelItem => item.Email)</span></td>
+                    <td>@Html.DisplayFor(modelItem => item.Telefono)</td>
+                    <td>
+                        @if (item.EsCliente)
+                        {
+                            <span class="em-pill em-pill-on">Sí</span>
+                        }
+                        else
+                        {
+                            <span class="em-pill em-pill-off">No</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.EsEmprendedor)
+                        {
+                            <span class="em-pill em-role-emp">Sí</span>
+                        }
+                        else
+                        {
+                            <span class="em-pill em-pill-off">No</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.EsAdministrador)
+                        {
+                            <span class="em-pill em-role-admin">Sí</span>
+                        }
+                        else
+                        {
+                            <span class="em-pill em-pill-off">No</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.Activo)
+                        {
+                            <span class="em-pill em-status-active">Activo</span>
+                        }
+                        else
+                        {
+                            <span class="em-pill em-status-inactive">Inactivo</span>
+                        }
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.FechaCreacion)</td>
+                    <td>
+                        <div class="em-row-actions">
+                            <a class="edit" asp-action="Edit" asp-route-id="@item.Id" title="Editar"><i class="bi bi-pencil"></i></a>
+                            <a class="view" asp-action="Details" asp-route-id="@item.Id" title="Detalles"><i class="bi bi-eye"></i></a>
+                            <a class="delete" asp-action="Delete" asp-route-id="@item.Id" title="Eliminar"><i class="bi bi-trash"></i></a>
+                        </div>
+                    </td>
+                </tr>
+}
+            </tbody>
+        </table>
+    </div>
+
+</div>

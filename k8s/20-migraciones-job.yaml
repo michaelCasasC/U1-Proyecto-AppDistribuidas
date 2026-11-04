@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: emprendermarket-migraciones
+  namespace: emprendermarket
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: migraciones
+          image: michacc/emprendemarket-web:local
+          envFrom:
+            - configMapRef:
+                name: emprendermarket-config
+          env:
+            - name: ConnectionStrings__DefaultConnection
+              valueFrom:
+                secretKeyRef:
+                  name: emprendermarket-secrets
+                  key: default-connection
+            - name: Redis__ConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: emprendermarket-secrets
+                  key: redis-connection
+            - name: RunMigrations
+              value: "true"
+            - name: RunMigrationsOnly
+              value: "true"
+          command: ["dotnet", "Proyecto.dll"]

@@ -1,0 +1,114 @@
+@model RegistrosActivosViewModel
+
+@{
+    ViewData["Title"] = "Registros Activos e Inactivos";
+}
+
+<style>
+    :root{
+        --tinta:#241F1B;
+        --crema:#FBF4E8;
+        --crema-2:#F1E6D2;
+        --terracota:#C75D3D;
+        --terracota-d:#9C3F26;
+        --mostaza:#E0A845;
+        --salvia:#6B7A4F;
+        --linea:#E2D3B4;
+    }
+    .em-rep-page{ font-family:'Work Sans','Segoe UI',sans-serif; color:var(--tinta); }
+    .em-rep-header{
+        display:flex; justify-content:space-between; align-items:center;
+        margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;
+    }
+    .em-rep-header h1{
+        font-family:'Fraunces', Georgia, serif; font-weight:600; font-size:1.8rem;
+        color:var(--tinta); margin:0; display:flex; align-items:center; gap:.6rem;
+    }
+    .em-rep-header h1::before{
+        content:""; display:inline-block; width:10px; height:10px;
+        border-radius:50%; background:var(--terracota);
+    }
+    .em-btn-sec{
+        background:transparent; border:1.5px solid var(--linea); color:var(--tinta);
+        border-radius:999px; font-weight:600; font-size:.85rem; padding:.55rem 1.2rem;
+        cursor:pointer; transition:background .18s ease; text-decoration:none; display:inline-block;
+    }
+    .em-btn-sec:hover{ background:var(--crema-2); }
+    .em-table-wrap{
+        background:#fff; border:1px solid var(--linea); border-radius:16px; overflow:auto;
+    }
+    .em-table{
+        width:100%; border-collapse:collapse; min-width:550px;
+    }
+    .em-table thead th{
+        background:var(--tinta); color:var(--crema); font-size:.72rem;
+        font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+        padding:.95rem 1rem; text-align:left; white-space:nowrap;
+    }
+    .em-table tbody td{
+        padding:.85rem 1rem; border-bottom:1px solid var(--linea);
+        font-size:.9rem; color:var(--tinta);
+    }
+    .em-table tbody tr:last-child td{ border-bottom:none; }
+    .em-table tbody tr:hover{ background:var(--crema-2); }
+    .em-bar-bg{
+        background:var(--crema-2); border-radius:999px; height:18px; overflow:hidden; width:100%;
+    }
+    .em-bar-fill{
+        background:var(--salvia); height:100%; border-radius:999px; transition:width .4s ease;
+    }
+    .em-pill{
+        font-size:.72rem; font-weight:700; padding:.25rem .65rem; border-radius:999px; display:inline-block;
+    }
+    .em-pill-on{ background:#E7EEDC; color:var(--salvia); border:1px solid #cfdcb9; }
+    .em-pill-off{ background:var(--crema-2); color:#a89c87; border:1px solid var(--linea); }
+</style>
+
+<div class="em-rep-page">
+
+    <div class="em-rep-header">
+        <h1>@ViewData["Title"]</h1>
+        <a asp-action="Index" class="em-btn-sec">← Volver</a>
+    </div>
+
+    @if (Model.Items.Any())
+    {
+        <div class="em-table-wrap">
+            <table class="em-table">
+                <thead>
+                    <tr>
+                        <th>Entidad</th>
+                        <th>Activos</th>
+                        <th>Inactivos</th>
+                        <th>Total</th>
+                        <th>% Activos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td><strong>@item.Entidad</strong></td>
+                            <td><span class="em-pill em-pill-on">@item.Activos</span></td>
+                            <td><span class="em-pill em-pill-off">@item.Inactivos</span></td>
+                            <td>@item.Total</td>
+                            <td>
+                                <div style="display:flex;align-items:center;gap:.6rem;">
+                                    <div class="em-bar-bg">
+                                        <div class="em-bar-fill" style="width:@item.PorcentajeActivos%"></div>
+                                    </div>
+                                    <span style="font-weight:600;font-size:.85rem;white-space:nowrap;">@item.PorcentajeActivos%</span>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p style="color:#7a7164;padding:2rem 0;">Sin datos disponibles.</p>
+    }
+
+</div>

@@ -1,0 +1,278 @@
+@model Proyecto.ViewModels.PedidoIndexViewModel
+
+@{
+    ViewData["Title"] = "Pedidos";
+}
+
+<style>
+    :root{
+        --tinta:#241F1B;
+        --crema:#FBF4E8;
+        --crema-2:#F1E6D2;
+        --terracota:#C75D3D;
+        --terracota-d:#9C3F26;
+        --mostaza:#E0A845;
+        --salvia:#6B7A4F;
+        --linea:#E2D3B4;
+    }
+
+    .em-ped-page{ font-family:'Work Sans','Segoe UI',sans-serif; color:var(--tinta); }
+
+    .em-header{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:1.6rem;
+        flex-wrap:wrap;
+        gap:1rem;
+    }
+
+    .em-header h1{
+        font-family:'Fraunces', Georgia, serif;
+        font-weight:600;
+        font-size:2rem;
+        color:var(--tinta);
+        margin:0;
+        display:flex;
+        align-items:center;
+        gap:.6rem;
+    }
+
+    .em-header h1::before{
+        content:"";
+        display:inline-block;
+        width:10px;
+        height:10px;
+        border-radius:50%;
+        background:var(--terracota);
+    }
+
+    .em-btn-create{
+        background:var(--terracota);
+        border:none;
+        color:#fff !important;
+        border-radius:999px;
+        font-weight:600;
+        font-size:.92rem;
+        padding:.6rem 1.3rem;
+        text-decoration:none;
+        display:inline-flex;
+        align-items:center;
+        gap:.4rem;
+        transition:background .18s ease, transform .18s ease;
+    }
+
+    .em-btn-create:hover{
+        background:var(--terracota-d);
+        transform:translateY(-2px);
+    }
+
+    .em-table-wrap{
+        background:#fff;
+        border:1px solid var(--linea);
+        border-radius:16px;
+        overflow:hidden;
+    }
+
+    .em-table{
+        width:100%;
+        border-collapse:collapse;
+    }
+
+    .em-table thead th{
+        background:var(--tinta);
+        color:var(--crema);
+        font-size:.74rem;
+        font-weight:700;
+        text-transform:uppercase;
+        padding:.95rem 1.2rem;
+        text-align:left;
+    }
+
+    .em-table tbody td{
+        padding:1rem 1.2rem;
+        border-bottom:1px solid var(--linea);
+        font-size:.92rem;
+    }
+
+    .em-table tbody tr:hover{
+        background:var(--crema-2);
+    }
+
+    .em-total{
+        font-weight:700;
+        color:var(--terracota-d);
+    }
+
+    .em-status{
+        font-size:.74rem;
+        font-weight:600;
+        padding:.28rem .7rem;
+        border-radius:999px;
+    }
+
+    .em-status-active{
+        background:#E7EEDC;
+        color:var(--salvia);
+    }
+
+    .em-status-inactive{
+        background:var(--crema-2);
+        color:#8a8174;
+    }
+
+    .em-pagination{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        flex-wrap:wrap;
+        margin-top:1.5rem;
+        gap:1rem;
+    }
+
+    .em-pagination-info{
+        color:#8a8174;
+        font-size:.9rem;
+    }
+
+    .em-pagination-links{
+        display:flex;
+        gap:.4rem;
+        align-items:center;
+        flex-wrap:wrap;
+    }
+
+    .em-page-link{
+        padding:.55rem .9rem;
+        border:1px solid var(--linea);
+        border-radius:999px;
+        text-decoration:none;
+        color:var(--tinta);
+        background:#fff;
+    }
+
+    .em-page-current{
+        background:var(--tinta);
+        color:#fff;
+        padding:.55rem .9rem;
+        border-radius:999px;
+        font-weight:600;
+    }
+</style>
+
+<div class="em-ped-page">
+
+    <div class="em-header">
+        <h1>@ViewData["Title"]</h1>
+
+        <a asp-action="Create" class="em-btn-create">
+            <i class="bi bi-plus-circle"></i>
+            Crear Nuevo
+        </a>
+    </div>
+
+    <div class="em-table-wrap">
+        <table class="em-table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Fecha Pedido</th>
+                    <th>Total</th>
+                    <th>Activo</th>
+                    <th>Fecha Creación</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model.Pedidos)
+                {
+                    <tr>
+                        <td>@item.Usuario?.Email</td>
+                        <td>@item.FechaPedido</td>
+                        <td><span class="em-total">@item.Total</span></td>
+
+                        <td>
+                            @if (item.Activo)
+                            {
+                                <span class="em-status em-status-active">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="em-status em-status-inactive">Inactivo</span>
+                            }
+                        </td>
+
+                        <td>@item.FechaCreacion</td>
+
+                        <td>
+                            <div class="em-row-actions">
+                                <a class="edit" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a>
+                                <a class="view" asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-eye"></i></a>
+                                <a class="delete" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="em-pagination">
+
+        <div class="em-pagination-info">
+            Mostrando
+            @(((Model.CurrentPage - 1) * Model.PageSize) + 1)
+            -
+            @(Math.Min(Model.CurrentPage * Model.PageSize, Model.TotalRecords))
+            de
+            @Model.TotalRecords registros
+        </div>
+
+        <div class="em-pagination-links">
+
+            @if (Model.CurrentPage > 1)
+            {
+                <a asp-action="Index" asp-route-page="1" class="em-page-link">Primera</a>
+
+                <a asp-action="Index"
+                   asp-route-page="@(Model.CurrentPage - 1)"
+                   class="em-page-link">
+                    ← Anterior
+                </a>
+            }
+
+            @for (int i = Math.Max(1, Model.CurrentPage - 2);
+                 i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2);
+                 i++)
+            {
+                if (i == Model.CurrentPage)
+                {
+                    <span class="em-page-current">@i</span>
+                }
+                else
+                {
+                    <a asp-action="Index" asp-route-page="@i" class="em-page-link">@i</a>
+                }
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <a asp-action="Index"
+                   asp-route-page="@(Model.CurrentPage + 1)"
+                   class="em-page-link">
+                    Siguiente →
+                </a>
+
+                <a asp-action="Index"
+                   asp-route-page="@Model.TotalPages"
+                   class="em-page-link">
+                    Última
+                </a>
+            }
+
+        </div>
+
+    </div>
+
+</div>

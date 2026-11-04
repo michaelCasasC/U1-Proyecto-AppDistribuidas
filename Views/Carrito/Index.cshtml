@@ -1,0 +1,155 @@
+@model IEnumerable<Proyecto.ViewModels.CartItemViewModel>
+
+@{
+    ViewData["Title"] = "Carrito de Compras";
+}
+
+<div class="container py-3">
+    <h1 class="h2 text-dark mb-4">
+        <i class="bi bi-cart3 text-primary me-2"></i> Mi Carrito de Compras
+    </h1>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="card shadow-sm border-0 text-center py-5">
+            <div class="card-body">
+                <i class="bi bi-cart-x text-muted" style="font-size: 4rem;"></i>
+                <h3 class="mt-3 text-secondary">Tu carrito está vacío</h3>
+                <p class="text-muted">Parece que aún no has agregado productos a tu carrito.</p>
+                <a asp-controller="Productos" asp-action="Index" class="btn btn-primary btn-lg mt-3">
+                    <i class="bi bi-bag-fill me-1"></i> Explorar Productos
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <!-- Detalle de Productos -->
+            <div class="col-lg-8 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light text-secondary">
+                                    <tr>
+                                        <th scope="col" class="ps-4">Producto</th>
+                                        <th scope="col" class="text-center" style="width: 120px;">Precio</th>
+                                        <th scope="col" class="text-center" style="width: 180px;">Cantidad</th>
+                                        <th scope="col" class="text-end" style="width: 120px;">Subtotal</th>
+                                        <th scope="col" class="text-center" style="width: 80px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td class="ps-4 py-3">
+                                                <div class="d-flex flex-column">
+                                                    <span class="fw-semibold text-dark fs-5">@item.Producto.Nombre</span>
+                                                    <div class="mt-1">
+                                                        <span class="badge bg-secondary-subtle text-secondary me-1">@item.Producto.Categoria?.Nombre</span>
+                                                        <span class="badge bg-primary-subtle text-primary">@item.Producto.Emprendimiento?.Nombre</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center fw-medium">
+                                                $@item.Producto.Precio.ToString("F2")
+                                            </td>
+                                            <td class="text-center">
+                                                <form asp-action="Update" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="productoId" value="@item.Producto.Id" />
+                                                    <div class="input-group input-group-sm">
+                                                        <button class="btn btn-outline-secondary" type="button" onclick="decrementCartQty(@item.Producto.Id)">-</button>
+                                                        <input type="number" id="qty-@item.Producto.Id" name="cantidad" 
+                                                               class="form-control text-center fw-semibold" 
+                                                               value="@item.Cantidad" min="1" max="@item.Producto.Stock" readonly />
+                                                        <button class="btn btn-outline-secondary" type="button" onclick="incrementCartQty(@item.Producto.Id, @item.Producto.Stock)">+</button>
+                                                        <button type="submit" class="btn btn-success" title="Guardar cantidad">
+                                                            <i class="bi bi-check-lg"></i>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                            <td class="text-end fw-bold text-dark pe-3">
+                                                $@item.Subtotal.ToString("F2")
+                                            </td>
+                                            <td class="text-center pe-4">
+                                                <form asp-action="Remove" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="productoId" value="@item.Producto.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar del carrito">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumen y Checkout -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 mb-4 bg-light">
+                    <div class="card-body p-4">
+                        <h4 class="card-title text-dark h5 mb-3">Resumen de la Compra</h4>
+                        <hr />
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Total de Artículos:</span>
+                            <span class="fw-semibold text-dark">@Model.Sum(x => x.Cantidad)</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span class="text-muted fs-5">Total a Pagar:</span>
+                            <span class="fs-4 fw-bold text-success">$@Model.Sum(x => x.Subtotal).ToString("F2")</span>
+                        </div>
+
+                        <form asp-action="Checkout" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-success btn-lg w-100 py-3 mb-2 shadow-sm d-flex justify-content-center align-items-center">
+                                <i class="bi bi-credit-card-2-front me-2"></i> Confirmar y Crear Pedido
+                            </button>
+                        </form>
+                        
+                        <a asp-controller="Productos" asp-action="Index" class="btn btn-outline-secondary w-100 py-2 mt-2">
+                            <i class="bi bi-arrow-left me-1"></i> Seguir Comprando
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function decrementCartQty(prodId) {
+            var input = document.getElementById('qty-' + prodId);
+            var val = parseInt(input.value);
+            if (val > 1) {
+                input.value = val - 1;
+            }
+        }
+        function incrementCartQty(prodId, maxStock) {
+            var input = document.getElementById('qty-' + prodId);
+            var val = parseInt(input.value);
+            if (val < maxStock) {
+                input.value = val + 1;
+            }
+        }
+    </script>
+}

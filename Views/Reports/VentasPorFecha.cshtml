@@ -1,0 +1,149 @@
+@model VentasPorFechaViewModel
+
+@{
+    ViewData["Title"] = "Ventas por Fecha";
+}
+
+<style>
+    :root{
+        --tinta:#241F1B;
+        --crema:#FBF4E8;
+        --crema-2:#F1E6D2;
+        --terracota:#C75D3D;
+        --terracota-d:#9C3F26;
+        --mostaza:#E0A845;
+        --salvia:#6B7A4F;
+        --linea:#E2D3B4;
+    }
+    .em-rep-page{ font-family:'Work Sans','Segoe UI',sans-serif; color:var(--tinta); }
+    .em-rep-header{
+        display:flex; justify-content:space-between; align-items:center;
+        margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;
+    }
+    .em-rep-header h1{
+        font-family:'Fraunces', Georgia, serif; font-weight:600; font-size:1.8rem;
+        color:var(--tinta); margin:0; display:flex; align-items:center; gap:.6rem;
+    }
+    .em-rep-header h1::before{
+        content:""; display:inline-block; width:10px; height:10px;
+        border-radius:50%; background:var(--terracota);
+    }
+    .em-filtros{
+        background:#fff; border:1px solid var(--linea); border-radius:14px;
+        padding:1.2rem 1.5rem; margin-bottom:1.5rem;
+        display:flex; gap:1rem; align-items:end; flex-wrap:wrap;
+    }
+    .em-filtros label{ font-size:.82rem; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:#7a7164; margin-bottom:.25rem; display:block; }
+    .em-filtros input{ border:1.5px solid var(--linea); border-radius:8px; padding:.5rem .75rem; font-size:.9rem; background:var(--crema); color:var(--tinta); }
+    .em-filtros input:focus{ outline:none; border-color:var(--mostaza); }
+    .em-btn{
+        background:var(--terracota); border:none; color:#fff; border-radius:999px;
+        font-weight:600; font-size:.85rem; padding:.55rem 1.2rem; cursor:pointer;
+        transition:background .18s ease; text-decoration:none; display:inline-block;
+    }
+    .em-btn:hover{ background:var(--terracota-d); }
+    .em-btn-sec{
+        background:transparent; border:1.5px solid var(--linea); color:var(--tinta);
+        border-radius:999px; font-weight:600; font-size:.85rem; padding:.55rem 1.2rem;
+        cursor:pointer; transition:background .18s ease; text-decoration:none; display:inline-block;
+    }
+    .em-btn-sec:hover{ background:var(--crema-2); }
+    .em-table-wrap{
+        background:#fff; border:1px solid var(--linea); border-radius:16px; overflow:auto;
+    }
+    .em-table{
+        width:100%; border-collapse:collapse; min-width:500px;
+    }
+    .em-table thead th{
+        background:var(--tinta); color:var(--crema); font-size:.72rem;
+        font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+        padding:.95rem 1rem; text-align:left; white-space:nowrap;
+    }
+    .em-table tbody td{
+        padding:.85rem 1rem; border-bottom:1px solid var(--linea);
+        font-size:.9rem; color:var(--tinta);
+    }
+    .em-table tbody tr:last-child td{ border-bottom:none; }
+    .em-table tbody tr:hover{ background:var(--crema-2); }
+    .chart-wrap{ background:#fff; border:1px solid var(--linea); border-radius:16px; padding:1.5rem; margin-bottom:1.5rem; }
+</style>
+
+<div class="em-rep-page">
+
+    <div class="em-rep-header">
+        <h1>@ViewData["Title"]</h1>
+        <a asp-action="Index" class="em-btn-sec">← Volver</a>
+    </div>
+
+    <form method="get" class="em-filtros">
+        <div>
+            <label>Fecha inicio</label>
+            <input type="date" name="fechaInicio" value="@Model.FechaInicio.ToString("yyyy-MM-dd")" />
+        </div>
+        <div>
+            <label>Fecha fin</label>
+            <input type="date" name="fechaFin" value="@Model.FechaFin.ToString("yyyy-MM-dd")" />
+        </div>
+        <button type="submit" class="em-btn">Filtrar</button>
+    </form>
+
+    @if (Model.Items.Any())
+    {
+        <div class="chart-wrap">
+            <canvas id="ventasChart" height="120"></canvas>
+        </div>
+
+        <div class="em-table-wrap">
+            <table class="em-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Pedidos</th>
+                        <th>Total Ventas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                            <td>@item.CantidadPedidos</td>
+                            <td>$@item.TotalVentas.ToString("N2")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const ctx = document.getElementById('ventasChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [@Html.Raw(string.Join(",", Model.Items.Select(i => $"'{i.Fecha:dd/MM}'")))],
+                    datasets: [
+                        {
+                            label: 'Ventas ($)',
+                            data: [@string.Join(",", Model.Items.Select(i => i.TotalVentas.ToString(System.Globalization.CultureInfo.InvariantCulture)))],
+                            borderColor: '#C75D3D',
+                            backgroundColor: 'rgba(199,93,61,0.1)',
+                            tension: .3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        </script>
+    }
+    else
+    {
+        <p style="color:#7a7164;padding:2rem 0;">Sin datos para el rango seleccionado.</p>
+    }
+
+</div>

@@ -1,0 +1,58 @@
+@{
+    ViewData["Title"] = "Tiempo real";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1>Tiempo real</h1>
+        <p class="text-muted mb-0">Eventos SignalR recibidos desde las réplicas de la aplicación.</p>
+    </div>
+    <button id="simulate-event" class="btn btn-primary" type="button">Simular evento</button>
+</div>
+
+<div class="alert alert-secondary" role="status">
+    Estado: <strong id="realtime-status">Conectando...</strong>
+    <span class="ms-3">Pod emisor: <strong id="realtime-instance">-</strong></span>
+</div>
+<div id="realtime-log" class="list-group" aria-live="polite"></div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+    <script>
+        (() => {
+            const status = document.getElementById("realtime-status");
+            const instance = document.getElementById("realtime-instance");
+            const log = document.getElementById("realtime-log");
+            const addLog = (type, data) => {
+                instance.textContent = data.instancia || "-";
+                const item = document.createElement("div");
+                item.className = "list-group-item";
+                item.textContent = `${new Date().toLocaleTimeString()} | ${type} | ${JSON.stringify(data)}`;
+                log.prepend(item);
+            };
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/hubs/notificaciones")
+                .withAutomaticReconnect()
+                .build();
+            connection.onreconnecting(() => status.textContent = "Reconectando...");
+            connection.onreconnected(() => status.textContent = "Conectado");
+            connection.onclose(() => status.textContent = "Desconectado");
+            connection.on("StockActualizado", data => {
+                addLog("StockActualizado", data);
+                document.querySelectorAll(`[data-product-stock="${data.productoId}"]`)
+                    .forEach(element => element.textContent = data.stockNuevo);
+            });
+            connection.on("NuevoPedido", data => addLog("NuevoPedido", data));
+            connection.on("EstadoPedidoCambiado", data => addLog("EstadoPedidoCambiado", data));
+            connection.start().then(() => status.textContent = "Conectado")
+                .catch(error => { status.textContent = "Error"; addLog("Error", { mensaje: error.message }); });
+            document.getElementById("simulate-event").addEventListener("click", async () => {
+                const response = await fetch("@Url.Action("Simular", "TiempoReal")", {
+                    method: "POST",
+                    headers: { "RequestVerificationToken": document.querySelector("input[name='__RequestVerificationToken']")?.value || "" }
+                });
+                if (response.ok) addLog("Simulación", await response.json());
+            });
+        })();
+    </script>
+}

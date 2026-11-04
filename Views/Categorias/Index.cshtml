@@ -1,0 +1,85 @@
+@model IEnumerable<Proyecto.Models.Categoria>
+@inject Proyecto.Services.IUserSessionService UserSession
+
+@{
+    ViewData["Title"] = "Categorías";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2 text-dark m-0">Categorías</h1>
+    @if (UserSession.IsAdmin)
+    {
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Crear Nueva Categoría
+        </a>
+    }
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light text-secondary">
+                <tr>
+                    <th scope="col" class="ps-4">
+                        @Html.DisplayNameFor(model => model.Nombre)
+                    </th>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.Descripcion)
+                    </th>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.Activo)
+                    </th>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.FechaCreacion)
+                    </th>
+                    <th scope="col" class="text-end pe-4">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model) {
+                    <tr>
+                        <td class="ps-4">
+                            <a asp-controller="Productos" asp-action="Index" asp-route-categoriaId="@item.Id" class="fw-semibold text-primary text-decoration-none">
+                                @item.Nombre
+                            </a>
+                        </td>
+                        <td>
+                            <span class="text-truncate d-inline-block" style="max-width: 300px;">
+                                @item.Descripcion
+                            </span>
+                        </td>
+                        <td>
+                            @if (item.Activo)
+                            {
+                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1">Activa</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2.5 py-1">Inactiva</span>
+                            }
+                        </td>
+                        <td>
+                            @item.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy")
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group" role="group">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info" title="Ver Detalles">
+                                    <i class="bi bi-eye"></i> Detalles
+                                </a>
+                                @if (UserSession.IsAdmin)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary" title="Editar">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                        <i class="bi bi-trash"></i> Eliminar
+                                    </a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

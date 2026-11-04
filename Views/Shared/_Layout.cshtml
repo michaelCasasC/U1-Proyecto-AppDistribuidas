@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EmprendeMarket</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Proyecto.styles.css" asp-append-version="true" />
+
+    <style>
+        :root{
+            --tinta:#241F1B;
+            --crema:#FBF4E8;
+            --crema-2:#F1E6D2;
+            --terracota:#C75D3D;
+            --terracota-d:#9C3F26;
+            --mostaza:#E0A845;
+            --salvia:#6B7A4F;
+            --linea:#E2D3B4;
+        }
+
+        html, body{
+            background:var(--crema);
+            font-family:'Work Sans', 'Segoe UI', sans-serif;
+            color:var(--tinta);
+        }
+
+        .navbar{
+            background:var(--tinta) !important;
+            padding-top:.7rem;
+            padding-bottom:.7rem;
+            border-bottom:3px solid var(--terracota);
+        }
+
+        .navbar-brand{
+            font-family:'Fraunces', Georgia, serif;
+            font-weight:600;
+            font-size:1.3rem;
+            letter-spacing:-.01em;
+            color:var(--crema) !important;
+            display:flex;
+            align-items:center;
+        }
+        .navbar-brand i{ color:var(--mostaza); }
+
+        .navbar .nav-link{
+            color:#E9DFCE !important;
+            font-weight:500;
+            font-size:.9rem;
+            padding:.4rem .75rem !important;
+            border-radius:999px;
+            transition:background .18s ease, color .18s ease;
+            white-space:nowrap;
+        }
+        .navbar .nav-link:hover{
+            background:rgba(255,255,255,.08);
+            color:#fff !important;
+        }
+
+        .navbar .navbar-text{
+            color:#E9DFCE !important;
+            font-size:.85rem;
+        }
+        .navbar .navbar-text i{ color:var(--mostaza); }
+
+        .navbar .badge.bg-danger{
+            background:var(--mostaza) !important;
+            color:var(--tinta) !important;
+            font-weight:700;
+        }
+
+        .navbar-toggler{
+            border:1.5px solid rgba(255,255,255,.25);
+            padding:.35rem .5rem;
+        }
+        .navbar-toggler-icon{
+            filter:invert(1) grayscale(1) brightness(1.6);
+        }
+
+        /* ===== OFFCANVAS SIDEBAR ===== */
+        .offcanvas{
+            background:var(--tinta);
+            color:var(--crema);
+            border-left:3px solid var(--terracota);
+        }
+        .offcanvas .offcanvas-header{
+            border-bottom:1px solid rgba(255,255,255,.08);
+        }
+        .offcanvas .offcanvas-title{
+            font-family:'Fraunces', serif;
+            font-weight:600;
+            color:var(--crema);
+        }
+        .offcanvas .btn-close{
+            filter:invert(1) brightness(1.6);
+        }
+
+        .sidebar-section{ margin-bottom:.25rem; }
+        .sidebar-section-title{
+            font-size:.7rem;
+            font-weight:700;
+            text-transform:uppercase;
+            letter-spacing:.08em;
+            color:#8a7f6b;
+            padding:.6rem 1.1rem .3rem;
+        }
+        .sidebar-link{
+            display:flex;
+            align-items:center;
+            gap:.6rem;
+            padding:.55rem 1.1rem;
+            color:#E9DFCE;
+            text-decoration:none;
+            font-size:.92rem;
+            font-weight:500;
+            border-radius:0;
+            transition:background .15s ease, color .15s ease;
+            border-left:3px solid transparent;
+        }
+        .sidebar-link i{ width:20px; text-align:center; color:var(--mostaza); font-size:1rem; }
+        .sidebar-link:hover{
+            background:rgba(255,255,255,.06);
+            color:#fff;
+            border-left-color:var(--terracota);
+        }
+        .sidebar-link.active{
+            background:rgba(255,255,255,.08);
+            border-left-color:var(--terracota);
+            color:#fff;
+        }
+        .sidebar-link.salir{ color:#b08b7a; }
+        .sidebar-link.salir i{ color:#b08b7a; }
+        .sidebar-link.salir:hover{ background:rgba(199,93,61,.12); color:var(--terracota); }
+        .sidebar-link.salir:hover i{ color:var(--terracota); }
+
+        .sidebar-user{
+            padding:.8rem 1.1rem;
+            border-bottom:1px solid rgba(255,255,255,.06);
+            margin-bottom:.5rem;
+        }
+        .sidebar-user .name{
+            font-weight:600;
+            font-size:.95rem;
+            color:var(--crema);
+        }
+        .sidebar-user .email{
+            font-size:.8rem;
+            color:#8a7f6b;
+            margin-top:.1rem;
+        }
+
+        main{ min-height:55vh; }
+
+        .footer{
+            background:var(--tinta) !important;
+            border-top:none !important;
+            color:#C9BBA0 !important;
+            padding:1.6rem 0 !important;
+            font-size:.9rem;
+        }
+        .footer span:first-child{
+            font-family:'Fraunces', serif;
+            font-weight:600;
+            color:var(--crema);
+            letter-spacing:.02em;
+        }
+        .footer span:last-child{
+            color:var(--mostaza);
+            font-weight:500;
+        }
+    </style>
+</head>
+<body>
+    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+    @inject Proyecto.Services.IUserSessionService UserSession
+
+    @{
+        var currentUser = UserSession.GetCurrentUser();
+        int cartCount = 0;
+        var cartJson = HttpContextAccessor.HttpContext?.Session?.GetString("ShoppingCart");
+        if (!string.IsNullOrEmpty(cartJson))
+        {
+            try
+            {
+                var cartDict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<int, int>>(cartJson);
+                if (cartDict != null) cartCount = cartDict.Values.Sum();
+            }
+            catch { }
+        }
+    }
+
+    <header>
+        <nav class="navbar navbar-dark shadow-sm">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-shop me-1"></i> EmprendeMarket
+                </a>
+
+                <div class="d-flex align-items-center gap-1">
+                    <a class="nav-link d-none d-sm-inline-block" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-house-door me-1"></i>Inicio
+                    </a>
+
+                    @if (UserSession.CanShop)
+                    {
+                        <a class="nav-link position-relative" asp-controller="Carrito" asp-action="Index" title="Carrito">
+                            <i class="bi bi-cart3 fs-5"></i>
+                            @if (cartCount > 0)
+                            {
+                                <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" style="font-size:.6rem;">@cartCount</span>
+                            }
+                        </a>
+                    }
+
+                    @if (UserSession.IsLoggedIn)
+                    {
+                        <span class="navbar-text d-none d-md-inline-block me-2">
+                            <i class="bi bi-person-circle me-1"></i>@currentUser?.Nombre
+                        </span>
+                    }
+
+                    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarNav"
+                            aria-controls="sidebarNav" aria-label="Menú">
+                        <i class="bi bi-list fs-5" style="color:#E9DFCE;"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="sidebarNav" aria-labelledby="sidebarLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="sidebarLabel">
+                <i class="bi bi-shop me-1"></i> EmprendeMarket
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="offcanvas-body p-0">
+            @if (UserSession.IsLoggedIn)
+            {
+                <div class="sidebar-user">
+                    <div class="name"><i class="bi bi-person-circle me-1"></i>@currentUser?.Nombre</div>
+                    <div class="email">@currentUser?.Email</div>
+                </div>
+            }
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Navegación</div>
+                <a class="sidebar-link" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door"></i>Inicio</a>
+                <a class="sidebar-link" asp-controller="Productos" asp-action="Index"><i class="bi bi-box-seam"></i>Productos</a>
+                <a class="sidebar-link" asp-controller="Categorias" asp-action="Index"><i class="bi bi-tags"></i>Categorías</a>
+                <a class="sidebar-link" asp-controller="Emprendimientos" asp-action="Index"><i class="bi bi-shop"></i>Emprendimientos</a>
+            </div>
+
+            @if (UserSession.IsLoggedIn)
+            {
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Mi cuenta</div>
+                    <a class="sidebar-link" asp-controller="Pedidos" asp-action="Index"><i class="bi bi-receipt"></i>Pedidos</a>
+                    @if (UserSession.CanShop)
+                    {
+                        <a class="sidebar-link position-relative" asp-controller="Carrito" asp-action="Index">
+                            <i class="bi bi-cart3"></i>Carrito
+                            @if (cartCount > 0)
+                            {
+                                <span class="badge bg-danger rounded-pill ms-auto" style="background:var(--mostaza)!important;color:var(--tinta)!important;">@cartCount</span>
+                            }
+                        </a>
+                    }
+                    <a class="sidebar-link" asp-controller="Account" asp-action="Security"><i class="bi bi-shield-lock"></i>Seguridad</a>
+                </div>
+            }
+
+            @if (UserSession.IsAdmin)
+            {
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Administración</div>
+                    <a class="sidebar-link" asp-controller="Usuarios" asp-action="Index"><i class="bi bi-people"></i>Usuarios</a>
+                    <a class="sidebar-link" asp-controller="Reports" asp-action="Index"><i class="bi bi-bar-chart"></i>Reportes</a>
+                </div>
+            }
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Herramientas</div>
+                <a class="sidebar-link" asp-controller="Asistente" asp-action="Index"><i class="bi bi-stars"></i>Asistente IA</a>
+                <a class="sidebar-link" asp-controller="TiempoReal" asp-action="Index"><i class="bi bi-broadcast"></i>Tiempo real</a>
+            </div>
+
+            <div class="sidebar-section" style="border-top:1px solid rgba(255,255,255,.06);margin-top:.25rem;">
+                @if (UserSession.IsLoggedIn)
+                {
+                    <a class="sidebar-link salir" asp-controller="Account" asp-action="Logout"><i class="bi bi-box-arrow-right"></i>Cerrar sesión</a>
+                }
+                else
+                {
+                    <a class="sidebar-link" asp-controller="Account" asp-action="Login"><i class="bi bi-box-arrow-in-right"></i>Iniciar sesión</a>
+                    <a class="sidebar-link" asp-controller="Account" asp-action="Register"><i class="bi bi-person-plus"></i>Crear cuenta</a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <main role="main" class="pb-3 mb-5">
+            @if (TempData["Mensaje"] is string mensaje)
+            {
+                <div style="background:#E7EEDC;color:#6B7A4F;border:1px solid #cfdcb9;border-radius:12px;padding:.85rem 1.1rem;margin-bottom:1.2rem;font-size:.9rem;font-weight:500;">
+                    @mensaje
+                </div>
+            }
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted py-3 bg-light mt-20">
+        <div class="container d-flex justify-content-between">
+            <span>&copy; 2026 EmprendeMarket</span> 
+            <span>Instancia: @(Environment.GetEnvironmentVariable("POD_NAME") ?? Environment.MachineName)</span>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,54 @@
+@{
+    ViewData["Title"] = "Acceso denegado";
+}
+
+<style>
+    :root{
+        --tinta:#241F1B;
+        --crema:#FBF4E8;
+        --crema-2:#F1E6D2;
+        --terracota:#C75D3D;
+        --terracota-d:#9C3F26;
+        --mostaza:#E0A845;
+        --salvia:#6B7A4F;
+        --linea:#E2D3B4;
+    }
+    .em-access-wrap{
+        display:flex; align-items:center; justify-content:center;
+        min-height:60vh; padding:2rem 1rem;
+        font-family:'Work Sans','Segoe UI',sans-serif;
+    }
+    .em-access-card{
+        background:#fff; border-radius:20px; border:1px solid var(--linea);
+        padding:2.5rem 2.2rem; width:100%; max-width:480px;
+        box-shadow:0 8px 32px rgba(0,0,0,.04); text-align:center;
+    }
+    .em-icon{ font-size:3.5rem; margin-bottom:.5rem; }
+    .em-access-card h1{
+        font-family:'Fraunces', Georgia, serif; font-weight:600;
+        font-size:1.5rem; color:var(--tinta); margin:0 0 .6rem;
+    }
+    .em-access-card p{ color:#7a7164; font-size:.95rem; line-height:1.5; margin:0 0 1.5rem; }
+    .em-btn-primary{
+        display:inline-block; background:var(--terracota); border:none; color:#fff; border-radius:999px;
+        font-weight:600; font-size:.9rem; padding:.65rem 1.5rem; text-decoration:none;
+        transition:background .18s ease;
+    }
+    .em-btn-primary:hover{ background:var(--terracota-d); color:#fff; }
+    .em-btn-sec{
+        display:inline-block; background:transparent; border:1.5px solid var(--linea); color:var(--tinta); border-radius:999px;
+        font-weight:600; font-size:.9rem; padding:.65rem 1.5rem; text-decoration:none;
+        transition:background .18s ease; margin-left:.5rem;
+    }
+    .em-btn-sec:hover{ background:var(--crema-2); }
+</style>
+
+<div class="em-access-wrap">
+    <div class="em-access-card">
+        <div class="em-icon">🔒</div>
+        <h1>Acceso denegado</h1>
+        <p>No tienes permisos para acceder a esta sección. Si crees que esto es un error, contacta al administrador.</p>
+        <a asp-controller="Home" asp-action="Index" class="em-btn-primary">Volver al inicio</a>
+        <a asp-controller="Account" asp-action="Login" class="em-btn-sec">Iniciar sesión</a>
+    </div>
+</div>

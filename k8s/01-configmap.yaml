@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: emprendermarket-config
+  namespace: emprendermarket
+data:
+  ASPNETCORE_ENVIRONMENT: Production
+  ASPNETCORE_URLS: http://+:8080
+  Ollama__BaseUrl: http://ollama:11434
+  Ollama__Model: qwen2.5:0.5b

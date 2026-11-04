@@ -1,0 +1,95 @@
+## ===== SCRIPTS CON CREDENCIALES =====
+create-secrets.ps1
+create-secrets.sh
+docker-compose.yml
+
+## ===== VISUAL STUDIO / RIDER / VSCODE =====
+.vs/
+.vscode/
+.idea/
+*.user
+*.userosscache
+*.sln.doccache
+*.suo
+*.rsuser
+*.DotSettings.user
+
+## ===== BUILD OUTPUT =====
+[Bb]in/
+[Oo]bj/
+artifacts/
+publish/
+out/
+
+## ===== PAQUETES / DEPENDENCIAS =====
+node_modules/
+packages/
+*.nupkg
+*.snupkg
+
+## ===== PUBLICACIÓN / AZURE =====
+*.azurepubxml
+*.pubxml
+*.pubxml.user
+
+## ===== SECRETOS Y CREDENCIALES =====
+# appsettings.json NO se ignora (sube sin credenciales reales)
+# Las credenciales van en appsettings.Development.json o User Secrets
+appsettings.Development.json
+appsettings.*.json
+!appsettings.json
+secrets.json
+.env
+.env.*
+*.pfx
+*.p12
+*.key
+*.pem
+
+## ===== BASE DE DATOS LOCAL =====
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+## ===== LOGS =====
+*.log
+logs/
+*.log.*
+
+## ===== SQL DE SEED / DATOS SENSIBLES =====
+seed_data.sql
+update_imagenes.sql
+
+## ===== ARCHIVOS DE SISTEMA =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+## ===== ARCHIVOS TEMPORALES =====
+*.tmp
+*.temp
+*.bak
+*.swp
+*.orig
+*~
+
+## ===== RIDER / JETBRAINS =====
+.idea/
+*.sln.iml
+
+## ===== COBERTURA Y TESTS =====
+coverage/
+TestResults/
+*.trx
+*.coveragexml
+
+## ===== RESPALDOS LOCALES =====
+backups/
+evidencias/
+tools/sonarqube/data/
+tools/sonarqube/logs/
+tools/sonarqube/extensions/
+dataprotection-keys/
+k8s/01-secret.yaml

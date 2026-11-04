@@ -1,0 +1,61 @@
+@model Proyecto.ViewModels.EnableAuthenticatorViewModel
+
+@{
+    ViewData["Title"] = "Activar doble factor";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title mb-3">Activar autenticación doble factor</h2>
+
+                <p class="text-muted">
+                    Escanea el código QR con tu app autenticadora o ingresa la clave manual.
+                </p>
+
+                <div class="row g-4 align-items-center mb-4">
+                    <div class="col-md-auto text-center">
+                        <img
+                            src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=@Uri.EscapeDataString(Model.AuthenticatorUri)"
+                            alt="Código QR para activar doble factor"
+                            width="220"
+                            height="220"
+                            class="img-thumbnail bg-white" />
+                    </div>
+                    <div class="col">
+                        <div class="alert alert-info mb-0">
+                            <strong>Clave manual:</strong>
+                            <code class="d-block fs-5 mt-2">@Model.SharedKey</code>
+                        </div>
+                    </div>
+                </div>
+
+                <details class="mb-4">
+                    <summary>Ver URI TOTP</summary>
+                    <code class="d-block mt-2 text-break">@Model.AuthenticatorUri</code>
+                </details>
+
+                <form asp-action="EnableAuthenticator" method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <input asp-for="SharedKey" type="hidden" />
+                    <input asp-for="AuthenticatorUri" type="hidden" />
+
+                    <div class="mb-3">
+                        <label asp-for="Code" class="form-label"></label>
+                        <input asp-for="Code" class="form-control" autocomplete="one-time-code" inputmode="numeric" />
+                        <span asp-validation-for="Code" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Verificar y activar</button>
+                    <a asp-action="Security" class="btn btn-link">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

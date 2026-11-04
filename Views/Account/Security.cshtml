@@ -1,0 +1,52 @@
+@model Proyecto.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Seguridad";
+    var twoFactorEnabled = ViewData["TwoFactorEnabled"] as bool? ?? false;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title mb-3">Seguridad de la cuenta</h2>
+
+                @if (TempData["Mensaje"] != null)
+                {
+                    <div class="alert alert-success">@TempData["Mensaje"]</div>
+                }
+
+                <dl class="row mb-4">
+                    <dt class="col-sm-4">Usuario</dt>
+                    <dd class="col-sm-8">@Model.Nombre</dd>
+
+                    <dt class="col-sm-4">Correo</dt>
+                    <dd class="col-sm-8">@Model.Email</dd>
+
+                    <dt class="col-sm-4">Doble factor</dt>
+                    <dd class="col-sm-8">
+                        @if (twoFactorEnabled)
+                        {
+                            <span class="badge bg-success">Activo</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Inactivo</span>
+                        }
+                    </dd>
+                </dl>
+
+                @if (twoFactorEnabled)
+                {
+                    <form asp-action="DisableAuthenticator" method="post">
+                        <button type="submit" class="btn btn-outline-danger">Desactivar autenticador</button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-action="EnableAuthenticator" class="btn btn-primary">Activar autenticador</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,135 @@
+@model ProductosBajoInventarioViewModel
+
+@{
+    ViewData["Title"] = "Productos con Bajo Inventario";
+}
+
+<style>
+    :root{
+        --tinta:#241F1B;
+        --crema:#FBF4E8;
+        --crema-2:#F1E6D2;
+        --terracota:#C75D3D;
+        --terracota-d:#9C3F26;
+        --mostaza:#E0A845;
+        --salvia:#6B7A4F;
+        --linea:#E2D3B4;
+    }
+    .em-rep-page{ font-family:'Work Sans','Segoe UI',sans-serif; color:var(--tinta); }
+    .em-rep-header{
+        display:flex; justify-content:space-between; align-items:center;
+        margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;
+    }
+    .em-rep-header h1{
+        font-family:'Fraunces', Georgia, serif; font-weight:600; font-size:1.8rem;
+        color:var(--tinta); margin:0; display:flex; align-items:center; gap:.6rem;
+    }
+    .em-rep-header h1::before{
+        content:""; display:inline-block; width:10px; height:10px;
+        border-radius:50%; background:var(--terracota);
+    }
+    .em-filtros{
+        background:#fff; border:1px solid var(--linea); border-radius:14px;
+        padding:1.2rem 1.5rem; margin-bottom:1.5rem;
+        display:flex; gap:1rem; align-items:end; flex-wrap:wrap;
+    }
+    .em-filtros label{ font-size:.82rem; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:#7a7164; margin-bottom:.25rem; display:block; }
+    .em-filtros input{ border:1.5px solid var(--linea); border-radius:8px; padding:.5rem .75rem; font-size:.9rem; background:var(--crema); color:var(--tinta); width:100px; }
+    .em-filtros input:focus{ outline:none; border-color:var(--mostaza); }
+    .em-btn{
+        background:var(--terracota); border:none; color:#fff; border-radius:999px;
+        font-weight:600; font-size:.85rem; padding:.55rem 1.2rem; cursor:pointer;
+        transition:background .18s ease; text-decoration:none; display:inline-block;
+    }
+    .em-btn:hover{ background:var(--terracota-d); }
+    .em-btn-sec{
+        background:transparent; border:1.5px solid var(--linea); color:var(--tinta);
+        border-radius:999px; font-weight:600; font-size:.85rem; padding:.55rem 1.2rem;
+        cursor:pointer; transition:background .18s ease; text-decoration:none; display:inline-block;
+    }
+    .em-btn-sec:hover{ background:var(--crema-2); }
+    .em-table-wrap{
+        background:#fff; border:1px solid var(--linea); border-radius:16px; overflow:auto;
+    }
+    .em-table{
+        width:100%; border-collapse:collapse; min-width:650px;
+    }
+    .em-table thead th{
+        background:var(--tinta); color:var(--crema); font-size:.72rem;
+        font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+        padding:.95rem 1rem; text-align:left; white-space:nowrap;
+    }
+    .em-table tbody td{
+        padding:.85rem 1rem; border-bottom:1px solid var(--linea);
+        font-size:.9rem; color:var(--tinta);
+    }
+    .em-table tbody tr:last-child td{ border-bottom:none; }
+    .em-table tbody tr:hover{ background:var(--crema-2); }
+    .em-stock-low{ color:var(--terracota-d); font-weight:700; }
+    .em-pill{
+        font-size:.72rem; font-weight:700; padding:.25rem .65rem; border-radius:999px; display:inline-block;
+    }
+    .em-pill-danger{ background:#F4DCD3; color:var(--terracota-d); border:1px solid #e9bba9; }
+    .em-pill-warn{ background:#FBE9CE; color:#8a5a14; border:1px solid #f1cf9c; }
+</style>
+
+<div class="em-rep-page">
+
+    <div class="em-rep-header">
+        <h1>@ViewData["Title"]</h1>
+        <a asp-action="Index" class="em-btn-sec">← Volver</a>
+    </div>
+
+    <form method="get" class="em-filtros">
+        <div>
+            <label>Stock mínimo</label>
+            <input type="number" name="stockMinimo" value="@Model.StockMinimo" min="1" />
+        </div>
+        <button type="submit" class="em-btn">Filtrar</button>
+    </form>
+
+    @if (Model.Items.Any())
+    {
+        <div class="em-table-wrap">
+            <table class="em-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Emprendimiento</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td><strong>@item.Producto</strong></td>
+                            <td>@item.Categoria</td>
+                            <td>@item.Emprendimiento</td>
+                            <td>$@item.Precio.ToString("N2")</td>
+                            <td class="em-stock-low">@item.Stock</td>
+                            <td>
+                                @if (item.Stock <= 5)
+                                {
+                                    <span class="em-pill em-pill-danger">Crítico</span>
+                                }
+                                else
+                                {
+                                    <span class="em-pill em-pill-warn">Bajo</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p style="color:#7a7164;padding:2rem 0;">No hay productos con stock menor o igual a @Model.StockMinimo.</p>
+    }
+
+</div>

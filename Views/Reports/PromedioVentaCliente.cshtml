@@ -1,0 +1,121 @@
+@model PromedioVentaClienteViewModel
+
+@{
+    ViewData["Title"] = "Promedio de Venta por Cliente";
+}
+
+<style>
+    :root{
+        --tinta:#241F1B;
+        --crema:#FBF4E8;
+        --crema-2:#F1E6D2;
+        --terracota:#C75D3D;
+        --terracota-d:#9C3F26;
+        --mostaza:#E0A845;
+        --salvia:#6B7A4F;
+        --linea:#E2D3B4;
+    }
+    .em-rep-page{ font-family:'Work Sans','Segoe UI',sans-serif; color:var(--tinta); }
+    .em-rep-header{
+        display:flex; justify-content:space-between; align-items:center;
+        margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;
+    }
+    .em-rep-header h1{
+        font-family:'Fraunces', Georgia, serif; font-weight:600; font-size:1.8rem;
+        color:var(--tinta); margin:0; display:flex; align-items:center; gap:.6rem;
+    }
+    .em-rep-header h1::before{
+        content:""; display:inline-block; width:10px; height:10px;
+        border-radius:50%; background:var(--terracota);
+    }
+    .em-btn-sec{
+        background:transparent; border:1.5px solid var(--linea); color:var(--tinta);
+        border-radius:999px; font-weight:600; font-size:.85rem; padding:.55rem 1.2rem;
+        cursor:pointer; transition:background .18s ease; text-decoration:none; display:inline-block;
+    }
+    .em-btn-sec:hover{ background:var(--crema-2); }
+    .em-cards-grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+        gap:1rem;
+        margin-bottom:1.5rem;
+    }
+    .em-card{
+        background:#fff; border:1px solid var(--linea); border-radius:14px;
+        padding:1.25rem 1.1rem;
+    }
+    .em-card .num{
+        font-family:'Fraunces', serif; font-size:1.8rem; font-weight:700;
+        color:var(--terracota); line-height:1.2;
+    }
+    .em-card .label{
+        font-size:.78rem; color:#7a7164; text-transform:uppercase;
+        letter-spacing:.04em; font-weight:600;
+    }
+    .em-table-wrap{
+        background:#fff; border:1px solid var(--linea); border-radius:16px; overflow:auto;
+    }
+    .em-table{
+        width:100%; border-collapse:collapse; min-width:600px;
+    }
+    .em-table thead th{
+        background:var(--tinta); color:var(--crema); font-size:.72rem;
+        font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+        padding:.95rem 1rem; text-align:left; white-space:nowrap;
+    }
+    .em-table tbody td{
+        padding:.85rem 1rem; border-bottom:1px solid var(--linea);
+        font-size:.9rem; color:var(--tinta);
+    }
+    .em-table tbody tr:last-child td{ border-bottom:none; }
+    .em-table tbody tr:hover{ background:var(--crema-2); }
+</style>
+
+<div class="em-rep-page">
+
+    <div class="em-rep-header">
+        <h1>@ViewData["Title"]</h1>
+        <a asp-action="Index" class="em-btn-sec">← Volver</a>
+    </div>
+
+    <div class="em-cards-grid">
+        <div class="em-card"><div class="num">$@Model.PromedioGlobal.ToString("N2")</div><div class="label">Promedio Global</div></div>
+        <div class="em-card"><div class="num">@Model.TotalClientesConCompras</div><div class="label">Clientes con Compras</div></div>
+        <div class="em-card"><div class="num">@Model.TotalPedidos</div><div class="label">Total Pedidos</div></div>
+        <div class="em-card"><div class="num">$@Model.IngresoTotal.ToString("N2")</div><div class="label">Ingreso Total</div></div>
+    </div>
+
+    @if (Model.Items.Any())
+    {
+        <div class="em-table-wrap">
+            <table class="em-table">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Email</th>
+                        <th>Compras</th>
+                        <th>Total Gastado</th>
+                        <th>Promedio x Compra</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td><strong>@item.Nombre</strong></td>
+                            <td>@item.Email</td>
+                            <td>@item.CantidadCompras</td>
+                            <td>$@item.TotalGastado.ToString("N2")</td>
+                            <td>$@item.Promedio.ToString("N2")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p style="color:#7a7164;padding:2rem 0;">Sin datos disponibles.</p>
+    }
+
+</div>

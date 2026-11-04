@@ -1,0 +1,134 @@
+@model LoginViewModel
+
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+
+<style>
+    :root{
+        --tinta:#241F1B;
+        --crema:#FBF4E8;
+        --crema-2:#F1E6D2;
+        --terracota:#C75D3D;
+        --terracota-d:#9C3F26;
+        --mostaza:#E0A845;
+        --salvia:#6B7A4F;
+        --linea:#E2D3B4;
+    }
+    body{ background:var(--crema); }
+    .em-auth-wrap{
+        display:flex; align-items:center; justify-content:center;
+        min-height:80vh; padding:2rem 1rem;
+        font-family:'Work Sans','Segoe UI',sans-serif;
+    }
+    .em-auth-card{
+        background:#fff; border-radius:20px; border:1px solid var(--linea);
+        padding:2.5rem 2.2rem; width:100%; max-width:440px;
+        box-shadow:0 8px 32px rgba(0,0,0,.04);
+    }
+    .em-auth-card h1{
+        font-family:'Fraunces', Georgia, serif; font-weight:600;
+        font-size:1.6rem; color:var(--tinta); margin:0 0 .35rem;
+        display:flex; align-items:center; gap:.55rem;
+    }
+    .em-auth-card h1::before{
+        content:""; display:inline-block; width:8px; height:8px;
+        border-radius:50%; background:var(--terracota);
+    }
+    .em-sub{ color:#7a7164; font-size:.9rem; margin-bottom:1.8rem; }
+    .em-field{ margin-bottom:1.25rem; }
+    .em-field label{
+        font-size:.78rem; font-weight:600; text-transform:uppercase;
+        letter-spacing:.05em; color:#7a7164; margin-bottom:.35rem; display:block;
+    }
+    .em-field input{
+        width:100%; padding:.65rem .85rem; border:1.5px solid var(--linea);
+        border-radius:10px; font-size:.92rem; background:var(--crema); color:var(--tinta);
+        transition:border-color .18s ease;
+    }
+    .em-field input:focus{ outline:none; border-color:var(--mostaza); background:#fff; }
+    .em-field .text-danger{ font-size:.8rem; margin-top:.25rem; display:block; }
+    .em-field .form-check-input{ width:auto; }
+    .em-btn-primary{
+        background:var(--terracota); border:none; color:#fff; border-radius:999px;
+        font-weight:600; font-size:.92rem; padding:.7rem 1.5rem; cursor:pointer;
+        transition:background .18s ease; width:100%;
+    }
+    .em-btn-primary:hover{ background:var(--terracota-d); }
+    .em-btn-google{
+        display:flex; align-items:center; justify-content:center; gap:.55rem;
+        width:100%; padding:.65rem 1rem; border:1.5px solid var(--linea);
+        border-radius:999px; background:#fff; color:var(--tinta);
+        font-weight:600; font-size:.88rem; text-decoration:none;
+        transition:background .18s ease; margin-top:.5rem;
+    }
+    .em-btn-google:hover{ background:var(--crema-2); }
+    .em-divider{
+        display:flex; align-items:center; gap:1rem; margin:1.2rem 0; color:#a89c87; font-size:.8rem;
+    }
+    .em-divider hr{ flex:1; border:none; border-top:1px solid var(--linea); margin:0; }
+    .em-auth-footer{
+        margin-top:1.3rem; text-align:center; font-size:.88rem;
+    }
+    .em-auth-footer a{
+        color:var(--terracota); text-decoration:none; font-weight:600;
+    }
+    .em-auth-footer a:hover{ color:var(--terracota-d); text-decoration:underline; }
+    .em-forgot{ font-size:.82rem; }
+    .em-forgot a{ color:#7a7164; text-decoration:none; }
+    .em-forgot a:hover{ color:var(--terracota); text-decoration:underline; }
+    .em-check{ display:flex; align-items:center; gap:.5rem; margin-bottom:1.25rem; }
+    .em-check input{ width:auto; margin:0; }
+    .em-check label{ font-size:.85rem; color:#7a7164; margin:0; }
+    .validation-summary-errors ul{ list-style:none; padding:0; margin:0 0 1rem; }
+    .validation-summary-errors li{ color:var(--terracota-d); font-size:.85rem; }
+</style>
+
+<div class="em-auth-wrap">
+    <div class="em-auth-card">
+        <h1>@ViewData["Title"]</h1>
+        <p class="em-sub">Bienvenido de nuevo a EmprendeMarket.</p>
+
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="em-field">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" placeholder="tucorreo@ejemplo.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="em-field">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" placeholder="Tu contraseña" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="em-check">
+                <input asp-for="RememberMe" class="form-check-input" />
+                <label asp-for="RememberMe"></label>
+            </div>
+
+            <button type="submit" class="em-btn-primary">Entrar</button>
+
+            <div class="em-forgot" style="text-align:right;margin-top:.6rem;">
+                <a asp-action="ForgotPassword">¿Olvidaste tu contraseña?</a>
+            </div>
+        </form>
+
+        <div class="em-divider"><hr /><span>o</span><hr /></div>
+
+        <a asp-action="ExternalLogin" asp-route-returnUrl="@ViewData["ReturnUrl"]" class="em-btn-google">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Iniciar sesión con Google
+        </a>
+
+        <div class="em-auth-footer">
+            ¿No tienes cuenta? <a asp-action="Register">Crear cuenta</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

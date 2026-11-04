@@ -1,0 +1,83 @@
+@model Proyecto.ViewModels.AiChatViewModel
+
+@{
+    ViewData["Title"] = "Asistente IA";
+}
+
+<div class="assistant-shell">
+    <section class="assistant-header mb-4">
+        <div>
+            <h1>Asistente IA</h1>
+            <p>Pregunta por regalos, precios, categorías o ideas según los productos disponibles.</p>
+        </div>
+        <span class="assistant-status">
+            <i class="bi bi-cpu me-1"></i> Ollama local
+        </span>
+    </section>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="Index" method="post">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Question" class="form-label"></label>
+                            <textarea asp-for="Question" class="form-control" rows="4" placeholder="Ej: ¿Qué producto me recomiendas para un regalo económico?"></textarea>
+                            <span asp-validation-for="Question" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send me-1"></i> Preguntar
+                        </button>
+                    </form>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-warning mt-4 mb-0">@Model.ErrorMessage</div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Answer))
+                    {
+                        <div class="assistant-answer mt-4">
+                            <div class="assistant-answer-title">
+                                <i class="bi bi-stars me-1"></i> Respuesta
+                            </div>
+                            <p>@Model.Answer</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Catálogo consultado</h2>
+                    @if (Model.AvailableProducts.Any())
+                    {
+                        <div class="assistant-product-list">
+                            @foreach (var product in Model.AvailableProducts.Take(8))
+                            {
+                                <div class="assistant-product-item">
+                                    <strong>@product.Nombre</strong>
+                                    <span>@product.Categoria · @product.Emprendimiento</span>
+                                    <small>$@product.Precio.ToString("0.00") · Stock @product.Stock</small>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">No hay productos disponibles para recomendar.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

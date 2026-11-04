@@ -1,0 +1,139 @@
+@model ReporteDashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard de Reportes";
+}
+
+<style>
+    :root{
+        --tinta:#241F1B;
+        --crema:#FBF4E8;
+        --crema-2:#F1E6D2;
+        --terracota:#C75D3D;
+        --terracota-d:#9C3F26;
+        --mostaza:#E0A845;
+        --salvia:#6B7A4F;
+        --linea:#E2D3B4;
+    }
+
+    .em-rep-page{ font-family:'Work Sans','Segoe UI',sans-serif; color:var(--tinta); }
+
+    .em-rep-header{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:2rem;
+        flex-wrap:wrap;
+        gap:1rem;
+    }
+    .em-rep-header h1{
+        font-family:'Fraunces', Georgia, serif;
+        font-weight:600;
+        font-size:2rem;
+        color:var(--tinta);
+        margin:0;
+        display:flex;
+        align-items:center;
+        gap:.6rem;
+    }
+    .em-rep-header h1::before{
+        content:"";
+        display:inline-block;
+        width:10px; height:10px;
+        border-radius:50%;
+        background:var(--terracota);
+    }
+
+    .em-cards-grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+        gap:1rem;
+        margin-bottom:2.5rem;
+    }
+    .em-card{
+        background:#fff;
+        border:1px solid var(--linea);
+        border-radius:14px;
+        padding:1.25rem 1.1rem;
+        transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .em-card:hover{ transform:translateY(-3px); box-shadow:0 6px 18px rgba(0,0,0,.06); }
+    .em-card .num{
+        font-family:'Fraunces', serif;
+        font-size:2rem;
+        font-weight:700;
+        color:var(--terracota);
+        line-height:1.2;
+    }
+    .em-card .label{
+        font-size:.82rem;
+        color:#7a7164;
+        text-transform:uppercase;
+        letter-spacing:.04em;
+        font-weight:600;
+    }
+
+    .em-rep-links{
+        display:grid;
+        grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+        gap:.75rem;
+        margin-top:1rem;
+    }
+    .em-rep-links a{
+        display:flex;
+        align-items:center;
+        gap:.7rem;
+        background:#fff;
+        border:1px solid var(--linea);
+        border-radius:12px;
+        padding:.9rem 1.1rem;
+        color:var(--tinta);
+        text-decoration:none;
+        font-weight:500;
+        font-size:.9rem;
+        transition:background .15s ease, border-color .15s ease, transform .15s ease;
+    }
+    .em-rep-links a:hover{
+        background:var(--crema-2);
+        border-color:var(--mostaza);
+        transform:translateY(-2px);
+    }
+    .em-rep-links a .icon{ font-size:1.2rem; width:28px; text-align:center; }
+</style>
+
+<div class="em-rep-page">
+
+    <div class="em-rep-header">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+
+    <div class="em-cards-grid">
+        <div class="em-card"><div class="num">@Model.TotalPedidos</div><div class="label">Total Pedidos</div></div>
+        <div class="em-card"><div class="num">@Model.PedidosActivos</div><div class="label">Pedidos Activos</div></div>
+        <div class="em-card"><div class="num">$@Model.IngresosTotales.ToString("N2")</div><div class="label">Ingresos Totales</div></div>
+        <div class="em-card"><div class="num">@Model.TotalClientes</div><div class="label">Clientes</div></div>
+        <div class="em-card"><div class="num">@Model.TotalEmprendimientos</div><div class="label">Emprendimientos</div></div>
+        <div class="em-card"><div class="num">@Model.TotalProductos</div><div class="label">Productos</div></div>
+        <div class="em-card"><div class="num">@Model.ProductosStockBajo</div><div class="label">Stock Bajo</div></div>
+        <div class="em-card"><div class="num">@Model.TotalPagosExitosos</div><div class="label">Pagos Exitosos</div></div>
+        <div class="em-card"><div class="num">@Model.TotalUsuarios</div><div class="label">Usuarios Registrados</div></div>
+    </div>
+
+    <h2 style="font-family:'Fraunces',serif;font-size:1.4rem;color:var(--tinta);margin:0 0 .5rem;">Reportes</h2>
+
+    <div class="em-rep-links">
+        <a asp-action="VentasPorFecha"><span class="icon">📅</span> Ventas por Fecha</a>
+        <a asp-action="VentasPorEmprendimiento"><span class="icon">🏪</span> Ventas por Emprendimiento</a>
+        <a asp-action="VentasPorUsuario"><span class="icon">👤</span> Ventas por Usuario</a>
+        <a asp-action="ProductosMasVendidos"><span class="icon">🏆</span> Productos Más Vendidos</a>
+        <a asp-action="ProductosBajoInventario"><span class="icon">📦</span> Productos con Bajo Inventario</a>
+        <a asp-action="MovimientosInventario"><span class="icon">🔄</span> Movimientos de Inventario</a>
+        <a asp-action="PagosPorPasarela"><span class="icon">💳</span> Pagos por Pasarela</a>
+        <a asp-action="PagosPorEstado"><span class="icon">✅</span> Pagos por Estado</a>
+        <a asp-action="ClientesTop"><span class="icon">⭐</span> Clientes con Más Compras</a>
+        <a asp-action="PromedioVentaCliente"><span class="icon">📊</span> Promedio de Venta por Cliente</a>
+        <a asp-action="IngresosPorMes"><span class="icon">📈</span> Ingresos por Mes</a>
+        <a asp-action="RegistrosActivos"><span class="icon">🔍</span> Registros Activos</a>
+    </div>
+
+</div>
