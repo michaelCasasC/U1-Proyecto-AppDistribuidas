@@ -123,8 +123,13 @@ namespace Proyecto.Controllers
         // POST: Pedidos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FechaPedido,Total,Activo,FechaCreacion")] Pedido pedido)
+        public IActionResult Create([Bind("Id,FechaPedido,Total,Activo,FechaCreacion")] Pedido pedido)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(pedido);
+            }
+
             return RedirectToAction("Index", "Carrito");
         }
 

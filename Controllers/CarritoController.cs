@@ -35,7 +35,11 @@ namespace Proyecto.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(int productoId, int cantidad = 1)
+        public async Task<IActionResult> Add(
+            int productoId,
+            int cantidad = 1,
+            [FromHeader(Name = "X-Requested-With")] string? requestedWith = null,
+            [FromHeader(Name = "Accept")] string? accept = null)
         {
             var accessResult = EnsureCanShop();
             if (accessResult != null) return accessResult;
@@ -54,7 +58,7 @@ namespace Proyecto.Controllers
             cart[productoId] = Math.Min(newQuantity, producto.Stock);
             SaveCart(cart);
 
-            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || Request.Headers["Accept"].ToString().Contains("application/json"))
+            if (requestedWith == "XMLHttpRequest" || accept?.Contains("application/json", StringComparison.OrdinalIgnoreCase) == true)
             {
                 var totalItems = cart.Values.Sum();
                 return Json(new { success = true, cartCount = totalItems });

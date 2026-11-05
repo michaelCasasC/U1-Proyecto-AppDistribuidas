@@ -159,6 +159,7 @@ C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\wwwroot\lib\jquery
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\wwwroot\lib\jquery\dist\jquery.min.map
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\wwwroot\lib\jquery\LICENSE.txt
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\appsettings.json
+C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\evidencias\sonar-after.json
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\evidencias\sonar-before.json
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\evidencias\zap\zap-report.json
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\Views\Account\ConfirmEmail.cshtml
