@@ -219,6 +219,7 @@ app.MapHub<NotificacionesHub>("/hubs/notificaciones");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllers();
 
 // ── ✅ CAMBIO 1: Las migraciones se ejecutan AHORA, después de configurar el pipeline ──
 // Esto asegura que la aplicación pueda iniciar incluso si hay errores de migración

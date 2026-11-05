@@ -1,7 +1,10 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
 
-const baseUrl = __ENV.BASE_URL || "http://localhost:30080";
+const baseUrl = __ENV.BASE_URL;
+if (!baseUrl) {
+  throw new Error("Defina BASE_URL. En Kubernetes use http://emprendermarket-web.");
+}
 export const options = {
   stages: [
     { duration: "30s", target: 10 },

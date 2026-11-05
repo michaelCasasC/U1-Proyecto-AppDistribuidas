@@ -3,18 +3,27 @@ using Proyecto.Services;
 
 namespace Proyecto.Controllers;
 
+[Route("Tiempo-Real")]
 public class TiempoRealController : Controller
 {
-    [HttpGet]
+    private readonly IUserSessionService _userSession;
+
+    public TiempoRealController(IUserSessionService userSession)
+    {
+        _userSession = userSession;
+    }
+
+    [HttpGet("")]
     public IActionResult Index() => View();
 
-    [HttpPost]
+    [HttpPost("Simular")]
     [Microsoft.AspNetCore.Authorization.AllowAnonymous]
     public async Task<IActionResult> Simular([FromServices] INotificacionService notificacionService)
     {
-        if (!HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment())
+        var environment = HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+        if (!environment.IsDevelopment() && !_userSession.IsLoggedIn)
         {
-            return NotFound();
+            return Unauthorized();
         }
 
         var stock = Random.Shared.Next(1, 25);

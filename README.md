@@ -68,11 +68,11 @@ el hub expone `UnirseComoEmprendedor` y `UnirseComoCliente`; la lógica de negoc
 ## Pruebas
 
 ```powershell
-k6 run tests/k6/load-test.js --summary-export evidencias/k6-summary.json
-k6 run tests/k6/realtime-test.js
-.\tests\k6\availability-check.ps1
+.\tests\k6\run-in-cluster.ps1 -Vus 10 -Duration 30s
+.\tests\k6\availability-check.ps1 -BaseUrl http://localhost:8090
 .\scripts\resilience-test.ps1
-.\scripts\network-test.ps1
+.\scripts\network-test.ps1 -Profile baseline
+.\scripts\network-test.ps1 -Profile delay-loss -Delay 100ms -Loss 5%
 docker compose -f tools/sonarqube/docker-compose.yml up -d
 .\scripts\sonar-scan.ps1
 .\scripts\zap-baseline.ps1

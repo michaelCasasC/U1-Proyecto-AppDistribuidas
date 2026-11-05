@@ -1,13 +1,18 @@
 @{
     ViewData["Title"] = "Tiempo real";
 }
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Environment
+@inject Proyecto.Services.IUserSessionService UserSession
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
         <h1>Tiempo real</h1>
         <p class="text-muted mb-0">Eventos SignalR recibidos desde las réplicas de la aplicación.</p>
     </div>
-    <button id="simulate-event" class="btn btn-primary" type="button">Simular evento</button>
+    @if (Environment.IsDevelopment() || UserSession.IsLoggedIn)
+    {
+        <button id="simulate-event" class="btn btn-primary" type="button">Simular evento</button>
+    }
 </div>
 
 <div class="alert alert-secondary" role="status">
@@ -46,13 +51,16 @@
             connection.on("EstadoPedidoCambiado", data => addLog("EstadoPedidoCambiado", data));
             connection.start().then(() => status.textContent = "Conectado")
                 .catch(error => { status.textContent = "Error"; addLog("Error", { mensaje: error.message }); });
-            document.getElementById("simulate-event").addEventListener("click", async () => {
-                const response = await fetch("@Url.Action("Simular", "TiempoReal")", {
-                    method: "POST",
-                    headers: { "RequestVerificationToken": document.querySelector("input[name='__RequestVerificationToken']")?.value || "" }
+            const simulateButton = document.getElementById("simulate-event");
+            if (simulateButton) {
+                simulateButton.addEventListener("click", async () => {
+                    const response = await fetch("@Url.Action("Simular", "TiempoReal")", {
+                        method: "POST",
+                        headers: { "RequestVerificationToken": document.querySelector("input[name='__RequestVerificationToken']")?.value || "" }
+                    });
+                    if (response.ok) addLog("Simulación", await response.json());
                 });
-                if (response.ok) addLog("Simulación", await response.json());
-            });
+            }
         })();
     </script>
 }

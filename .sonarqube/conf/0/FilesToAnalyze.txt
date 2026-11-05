@@ -159,6 +159,8 @@ C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\wwwroot\lib\jquery
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\wwwroot\lib\jquery\dist\jquery.min.map
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\wwwroot\lib\jquery\LICENSE.txt
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\appsettings.json
+C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\evidencias\sonar-before.json
+C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\evidencias\zap\zap-report.json
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\Views\Account\ConfirmEmail.cshtml
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\Views\Account\EnableAuthenticator.cshtml
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\Views\Account\ForgotPassword.cshtml
@@ -227,6 +229,14 @@ C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\docker-stack.yml
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\Dockerfile
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\docs\EVIDENCIAS.md
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\docs\red.md
+C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\evidencias\availability-20261104-204815.csv
+C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\evidencias\iperf3-base.txt
+C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\evidencias\iperf3-delay-loss.txt
+C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\evidencias\k6-k6-load-8828f9fb.log
+C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\evidencias\k6-k6-load-a3e878eb.log
+C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\evidencias\resilience-20261104-221808.log
+C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\evidencias\zap\zap-report.html
+C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\evidencias\zap\zap.yaml
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\k8s\00-namespace.yaml
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\k8s\01-configmap.yaml
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\k8s\01-secret.example.yaml
@@ -255,6 +265,7 @@ C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\Start-Swarm.ps1
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\tests\k6\availability-check.ps1
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\tests\k6\load-test.js
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\tests\k6\realtime-test.js
+C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\tests\k6\run-in-cluster.ps1
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\tools\sonarqube\docker-compose.yml
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\tools\sonarqube\sonar-project.properties
 C:\Users\USER\OneDrive\Documentos\7mo\Distribuidas\ProyectoU1\update_imagenes.sql
